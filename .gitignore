@@ -1,0 +1,9 @@
+.myenv
+
+data
+.DS_Store
+
+# pyc
+*.pyc
+OT_presentation
+.env

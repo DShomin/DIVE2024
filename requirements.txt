@@ -1,0 +1,12 @@
+# this requirements are for local python environment
+
+# for postgres
+sqlalchemy
+pandas
+psycopg2
+
+# for langgraph
+langchain
+python-dotenv
+langgraph
+langchain-openai
