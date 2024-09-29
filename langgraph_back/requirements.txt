@@ -1,0 +1,9 @@
+# for postgres
+pandas
+psycopg2-binary
+
+# for langgraph
+langchain
+python-dotenv
+langgraph
+langchain-openai
