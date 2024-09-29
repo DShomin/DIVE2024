@@ -1,0 +1,1 @@
+docker run -d --name dive_postgres -e POSTGRES_PASSWORD=divepassword -e POSTGRES_DB=dive2024 -p 5432:5432 postgres:14
