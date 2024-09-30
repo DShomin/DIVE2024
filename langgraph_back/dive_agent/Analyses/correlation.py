@@ -8,6 +8,11 @@ from typing_extensions import TypedDict
 from abc import ABC, abstractmethod
 
 
+BASE_DESCRIPTION = (
+    "This analysis is used to analyze the correlation between multiple variables."
+)
+
+
 class BaseCorrelationAnalysis(ABC):
     def __init__(self, input_data: Union[pd.DataFrame, np.ndarray]):
         self.input_data = self._validate_and_convert_input(input_data)
@@ -31,7 +36,7 @@ class BaseCorrelationAnalysis(ABC):
         )
 
     def get_base_description(self) -> str:
-        return "This analysis is used to analyze the correlation between multiple variables."
+        return BASE_DESCRIPTION
 
     @abstractmethod
     def get_specific_description(self) -> str:
