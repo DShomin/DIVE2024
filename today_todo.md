@@ -13,8 +13,8 @@
 # 2024-09-27
 - [x] build langgraph front
     - [x] build streamlit
-    - [ ] check visualization as plotly
-        - [ ] add x axis and y axis label
+    - [x] check visualization as plotly
+        - [x] add x axis and y axis label
 - [x] meeting for data analysis agent
     - [x] how to use ml model
     - [x] pre-processing
