@@ -1,19 +1,24 @@
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
+
 from dive_agent.DatabaseManager import DatabaseManager
 from dive_agent.LLMManager import LLMManager
+from dive_agent.AnalysisAgent import AnalysisAgent
 
 
 class SQLAgent:
     def __init__(self):
         self.db_manager = DatabaseManager()
         self.llm_manager = LLMManager()
+        self.analysis_agent = AnalysisAgent()
 
     def parse_question(self, state: dict) -> dict:
         """Parse user question and identify the relevant table and columns"""
         question = state["question"]
         tables_description = self.db_manager.get_table_description()
         schema = self.db_manager.get_table_schema()
+
+        analysis_tools = self.analysis_agent.get_analysis_tools()
 
         prompt = ChatPromptTemplate.from_messages(
             [
@@ -24,10 +29,18 @@ class SQLAgent:
                     And also, you can use the table description to help you.
                     If the question is not relevant to the database or if there is not enough information to answer the question, set is_relevant to false.
                     If there are multiple relevant tables, add all of them and add them in the order of columns, noun_columns, tables.
+                    
+                    If you need to use data analysis tools, set require_analysis to true.
+                    You can get the data analysis tools from description of analysis tools. 
+                    If you do not need to use data analysis tools, set require_analysis to false.
+                    If data analysis is required, set the associated table and columns accordingly
+                    
                     If you receive a question in a language other than English, translate the question into English.
                     
                     Your response should be in the following JSON format:
                     {{
+                        "require_analysis": boolean,
+                        "analysis_tools": [string]
                         "is_relevant": boolean,
                         "relevant_tables": [
                         {{
@@ -36,13 +49,14 @@ class SQLAgent:
                             "noun_columns": [string]
                         }}
                         ]
+                        
                     }}
                     The "noun_columns" field should contain only the columns that are relevant to the question and contain nouns or names, for example, the column "Artist_name" contains nouns relevant to the question "What are the top selling artists?", but the column "Artist ID" is not relevant because it does not contain a noun. Do not include columns that contain numbers.
                     """,
                 ),
                 (
                     "human",
-                    "===Database schema:\n{schema}\n\n===Table description:\n{tables_description}\n\n===User question: {question}\n\nIdentify relevant tables and columns:",
+                    "===Database schema:\n{schema}\n\n===Table description:\n{tables_description}\n\n===Analysis tools:\n{analysis_tools}\n\n===User question: {question}\n\nIdentify relevant tables and columns:",
                 ),
             ]
         )
