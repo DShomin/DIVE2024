@@ -1,5 +1,7 @@
 import os
 import psycopg2
+import pandas as pd
+import sqlalchemy
 
 
 class DatabaseManager:
@@ -118,8 +120,17 @@ class DatabaseManager:
         except Exception as e:
             raise Exception(f"Error executing query: {e}")
 
+    def execute_query_as_df(self, query):
+        db_info = self.connect.info.dsn_parameters
+        engine = sqlalchemy.create_engine(
+            f"postgresql://{db_info['user']}:divepassword@{db_info['host']}:{db_info['port']}/dive2024"
+        )
+        return pd.read_sql_query(query, engine)
+
 
 if __name__ == "__main__":
     db = DatabaseManager()
 
-    print(db.get_table_schema())
+    # print(db.get_table_schema())
+    df = db.execute_query_as_df("SELECT * FROM lotte_mart limit 10;")
+    print(df)
