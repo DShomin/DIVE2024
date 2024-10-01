@@ -14,7 +14,12 @@ BASE_DESCRIPTION = (
 
 
 class BaseCorrelationAnalysis(ABC):
-    def __init__(self, input_data: Union[pd.DataFrame, np.ndarray]):
+    def __init__(
+        self,
+        input_data: Union[pd.DataFrame, np.ndarray] = pd.DataFrame(
+            [[1, 2, 3], [4, 5, 6]]
+        ),
+    ):
         self.input_data = self._validate_and_convert_input(input_data)
 
     @staticmethod
@@ -57,7 +62,11 @@ class BaseCorrelationAnalysis(ABC):
 
 class NormalCorrelationAnalysis(BaseCorrelationAnalysis):
     def __init__(
-        self, input_data: Union[pd.DataFrame, np.ndarray], argument: Dict[str, Any]
+        self,
+        input_data: Union[pd.DataFrame, np.ndarray] = pd.DataFrame(
+            [[1, 2, 3], [4, 5, 6]]
+        ),
+        argument: Dict[str, Any] = {},
     ):
         super().__init__(input_data)
         self.argument = argument
@@ -148,7 +157,13 @@ class NormalCorrelationAnalysis(BaseCorrelationAnalysis):
 
 
 class CramerCorrelationAnalysis(BaseCorrelationAnalysis):
-    def __init__(self, input_data: Union[pd.DataFrame, np.ndarray]):
+    def __init__(
+        self,
+        input_data: Union[pd.DataFrame, np.ndarray] = pd.DataFrame(
+            [[1, 2, 3], [4, 5, 6]]
+        ),
+        argument: Dict[str, Any] = {},
+    ):
         super().__init__(input_data)
 
     def get_specific_description(self) -> str:
@@ -198,8 +213,15 @@ class CramerCorrelationAnalysis(BaseCorrelationAnalysis):
 
 
 class PointBiserialCorrelationAnalysis(BaseCorrelationAnalysis):
-    def __init__(self, input_data: Union[pd.DataFrame, np.ndarray]):
+    def __init__(
+        self,
+        input_data: Union[pd.DataFrame, np.ndarray] = pd.DataFrame(
+            [[1, 2, 3], [4, 5, 6]]
+        ),
+        argument: Dict[str, Any] = {},
+    ):
         super().__init__(input_data)
+        self.argument = argument
         self.binary_columns = []
 
     def get_specific_description(self) -> str:
@@ -232,6 +254,9 @@ class PointBiserialCorrelationAnalysis(BaseCorrelationAnalysis):
 
         return {}
 
+    def get_argument_explanation(self) -> Dict[str, Any]:
+        return {}
+
     def execute_analysis(self) -> Dict[str, Any]:
         binary_columns = self.binary_columns
         continuous_columns = self.input_data.iloc[
@@ -259,6 +284,13 @@ class PointBiserialCorrelationAnalysis(BaseCorrelationAnalysis):
             If the p-value is greater than 0.05 and the r-value is small: There is little or no correlation, and the relationship is not statistically significant.
             """,
         }
+
+
+TOOL_LIST = [
+    NormalCorrelationAnalysis,
+    CramerCorrelationAnalysis,
+    PointBiserialCorrelationAnalysis,
+]
 
 
 if __name__ == "__main__":

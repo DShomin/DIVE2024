@@ -1,11 +1,11 @@
 {
-    "python_version": "3.12",
-    "dockerfile_lines": [],
-    "dependencies": [
-        "."
-    ],
-    "graphs": {
-        "my_agent": "./dive_agent/main.py:graph"
-    },
-    "env": ".env"
+  "dockerfile_lines": [],
+  "graphs": {
+    "dive_agent": "./dive_agent/main.py:graph"
+  },
+  "env": ".env",
+  "python_version": "3.11",
+  "dependencies": [
+    "."
+  ]
 }

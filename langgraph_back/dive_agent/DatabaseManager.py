@@ -114,6 +114,7 @@ class DatabaseManager:
     def execute_query(self, query):
         try:
             with self.connect.cursor() as cursor:
+                query = query.replace("`", '"')
                 cursor.execute(query)
                 results = cursor.fetchall()
                 return results
@@ -121,6 +122,7 @@ class DatabaseManager:
             raise Exception(f"Error executing query: {e}")
 
     def execute_query_as_df(self, query):
+        query = query.replace("`", '"')
         db_info = self.connect.info.dsn_parameters
         engine = sqlalchemy.create_engine(
             f"postgresql://{db_info['user']}:divepassword@{db_info['host']}:{db_info['port']}/dive2024"

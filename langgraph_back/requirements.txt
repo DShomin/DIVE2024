@@ -1,9 +1,14 @@
+# for langgraph
+langgraph==0.2.28
+langchain
+python-dotenv
+
 # for postgres
 pandas
 psycopg2-binary
-
-# for langgraph
-langchain
-python-dotenv
-langgraph
+SQLAlchemy
 langchain-openai
+
+# for analysis
+scipy
+scikit-learn

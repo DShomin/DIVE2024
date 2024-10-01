@@ -40,7 +40,7 @@ class SQLAgent:
                     Your response should be in the following JSON format:
                     {{
                         "require_analysis": boolean,
-                        "analysis_tools": [string]
+                        "relevant_analysis_tools": [string],
                         "is_relevant": boolean,
                         "relevant_tables": [
                         {{
@@ -68,6 +68,7 @@ class SQLAgent:
             schema=schema,
             tables_description=tables_description,
             question=question,
+            analysis_tools=analysis_tools,
         )
         parsed_response = output_parser.parse(response)
         return {"parsed_question": parsed_response}
@@ -90,7 +91,9 @@ class SQLAgent:
                 results = self.db_manager.execute_query(query)
                 for row in results:
                     unique_nouns.update(str(value) for value in row if value)
-
+                # TODO: number data 처리가 필요함
+                if len(unique_nouns) > 500:
+                    return {"unique_nouns": []}
         return {"unique_nouns": list(unique_nouns)}
 
     def generate_sql(self, state: dict) -> dict:
@@ -98,6 +101,14 @@ class SQLAgent:
         question = state["question"]
         parsed_question = state["parsed_question"]
         unique_nouns = state["unique_nouns"]
+
+        analysis = state["selected_analysis"]
+        input_requier_for_analysis = {}
+        if analysis:
+            for analysis_info in analysis:
+                input_requier_for_analysis[analysis_info["analysis_name"]] = (
+                    analysis_info["required_input"]
+                )
 
         if not parsed_question["is_relevant"]:
             return {"sql_query": "NOT_RELEVANT", "is_relevent": False}
@@ -155,6 +166,9 @@ class SQLAgent:
 ===Unique nouns in relevant tables:
 {unique_nouns}
 
+===Required input data for analysis:
+{input_requier_for_analysis}
+
 Generate SQL query string
                         """,
                 ),
@@ -167,16 +181,27 @@ Generate SQL query string
             question=question,
             parsed_question=parsed_question,
             unique_nouns=unique_nouns,
+            input_requier_for_analysis=input_requier_for_analysis,
         )
 
         if response.strip() == "NOT_ENOUGH_INFO":
             return {"sql_query": "NOT_RELEVANT"}
-
-        return {"sql_query": response}
+        if input_requier_for_analysis:
+            return {
+                "sql_query": response,
+                "input_requier_for_analysis": input_requier_for_analysis,
+            }
+        else:
+            return {"sql_query": response}
 
     def validate_and_fix_sql(self, state: dict) -> dict:
         """Validate and fix the generated SQL query"""
         sql_query = state["sql_query"]
+
+        if "input_requier_for_analysis" in state.keys():
+            input_requier_for_analysis = state["input_requier_for_analysis"]
+        else:
+            input_requier_for_analysis = None
 
         if sql_query == "NOT_RELEVANT":
             return {"sql_query": "NOT_RELEVANT", "is_valid": False}
@@ -192,6 +217,11 @@ You are an AI assistant that validates and fixes SQL queries. Your task is to:
 2. Ensure all table and column names are correctly spelled and exist in the schema. All the table and column names should be enclosed in backticks.
 3. If there are any issues, fix them and provide the corrected SQL query.
 4. If no issues are found, return the original query.
+
+Sometimes, the user wants to use data analysis tools after generating a SQL query.
+So, you need to check if the SQL query is valid for data analysis.
+If it is, you need to return the corrected SQL query and set the analysis_available to true.
+If it is not, you need to return the corrected SQL query and set the analysis_available to false.
 
 Respond in JSON format with the following structure. Only respond with the JSON:
 {{
@@ -209,30 +239,37 @@ Respond in JSON format with the following structure. Only respond with the JSON:
 ===Generated SQL query:
 {sql_query}
 
+===Required input data for analysis:
+{input_requier_for_analysis}
+
 Respond in JSON format with the following structure. Only respond with the JSON:
 {{
     "valid": boolean,
     "issues": string or null,
-    "corrected_query": string
+    "corrected_query": string,
+    "analysis_available": boolean,
 }}
 
 For example:
 1. {{
     "valid": true,
     "issues": null,
-    "corrected_query": "None"
+    "corrected_query": "None",
+    "analysis_available": true,
 }}
 
 2. {{
     "valid": false,
     "issues": "Column USERS does not exist",
-    "corrected_query": "SELECT * FROM \"users\" WHERE age > 25"
+    "corrected_query": "SELECT * FROM \"users\" WHERE age > 25",
+    "analysis_available": true,
 }}
 
 3. {{
     "valid": false,
     "issues": "Column names and table names should be enclosed in backticks if they contain spaces or special characters",
-    "corrected_query": "SELECT * FROM \"gross income\" WHERE \"age\" > 25"
+    "corrected_query": "SELECT * FROM \"gross income\" WHERE \"age\" > 25",
+    "analysis_available": false,
 }}
 
 """,
@@ -244,6 +281,7 @@ For example:
             prompt,
             schema=schema,
             sql_query=sql_query,
+            input_requier_for_analysis=input_requier_for_analysis,
         )
         result = output_parser.parse(response)
 
@@ -254,6 +292,7 @@ For example:
                 "sql_query": result["corrected_query"],
                 "sql_valid": result["valid"],
                 "sql_issues": result["issues"],
+                "analysis_available": result["analysis_available"],
             }
 
     def execute_sql(self, state: dict) -> dict:
@@ -285,6 +324,13 @@ For example:
                 "answer": "Sorry, I can only give answers relevant to the database."
             }
 
+        if "analysis_results" in state:
+            analysis_results = state["analysis_results"]
+            if "error" in analysis_results:
+                analysis_results = {"error": analysis_results["error"]}
+        else:
+            analysis_results = {}
+
         prompt = ChatPromptTemplate.from_messages(
             [
                 (
@@ -293,11 +339,16 @@ For example:
                 ),
                 (
                     "human",
-                    "User question: {question}\n\nQuery results: {results}\n\nFormatted response:",
+                    "User question: {question}\n\nQuery results: {results}\n\nAnalysis results: {analysis_results}\n\nFormatted response:",
                 ),
             ]
         )
-        response = self.llm_manager.invoke(prompt, question=question, results=results)
+        response = self.llm_manager.invoke(
+            prompt,
+            question=question,
+            results=results,
+            analysis_results=analysis_results,
+        )
         return {"answer": response}
 
     def choose_visualization(self, state: dict) -> dict:
