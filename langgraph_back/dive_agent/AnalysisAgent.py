@@ -93,6 +93,10 @@ class AnalysisAgent:
 
         return result
 
+    def execute_query_as_df(self, sql_query: str) -> pd.DataFrame:
+        """Execute SQL query and return results as a DataFrame"""
+        return self.db_manager.execute_query_as_df(sql_query)
+
     def execute_analysis(self, state: dict) -> dict:
         """Execute the analysis tool and return the results"""
         sql_query = state["sql_query"]
