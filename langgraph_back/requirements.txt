@@ -3,7 +3,11 @@ pandas
 psycopg2-binary
 
 # for langgraph
+# langgraph==0.2.28
+langgraph
 langchain
 python-dotenv
-langgraph
 langchain-openai
+
+# for serpapi
+pytrends
