@@ -26,3 +26,6 @@ print(df.head())
 # top 30 rows of lotte_cs
 df = get_top_n_rows("lotte_cs", 30)
 print(df.head())
+
+df = get_top_n_rows("survey", 30)
+print(df.head())

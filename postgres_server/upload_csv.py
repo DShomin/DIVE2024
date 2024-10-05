@@ -1,5 +1,7 @@
 import pandas as pd
 
+from survey_pre_process import pre_process_survey
+
 from sqlalchemy import create_engine, Integer, Float, String, Date
 from sqlalchemy.types import TypeEngine
 import os
@@ -11,17 +13,21 @@ engine = create_engine(endpoint_url)
 
 # CSV 파일 경로 설정
 upload_list = [
+    # {
+    #     "name": "lotte_mart",
+    #     "path": "../data/DB/lotte/003_ltmb_mart_data.csv",
+    # },
+    # {
+    #     "name": "lotte_cs",
+    #     "path": "../data/DB/lotte/002_ltmb_k7_data.csv",
+    # },
+    # {
+    #     "name": "samsung",
+    #     "path": "../data/DB/samsung/DIVE_FINAL_F.csv",
+    # },
     {
-        "name": "lotte_mart",
-        "path": "../data/DB/lotte/003_ltmb_mart_data.csv",
-    },
-    {
-        "name": "lotte_cs",
-        "path": "../data/DB/lotte/002_ltmb_k7_data.csv",
-    },
-    {
-        "name": "samsung",
-        "path": "../data/DB/samsung/DIVE_FINAL_F.csv",
+        "name": "survey",
+        "path": "../data/DB/lotte/006_ltmb_lime_data.xlsx",
     },
 ]
 
@@ -73,8 +79,12 @@ def get_column_type(col_name: str, dtype: str) -> TypeEngine:
 for csv_file in upload_list:
     print(f"Uploading {csv_file['name']} to database")
     print(f"Target path: {csv_file['path']}")
-    df = pd.read_csv(csv_file["path"])
-    df = optimize_df(csv_file["name"], df)
+    if csv_file["name"] == "survey":
+        df = pd.read_excel(csv_file["path"], sheet_name="DATA")
+        df = pre_process_survey(df)
+    else:
+        df = pd.read_csv(csv_file["path"])
+        df = optimize_df(csv_file["name"], df)
     dtype = {col: get_column_type(col, df[col].dtype) for col in df.columns}
     df.to_sql(csv_file["name"], engine, if_exists="replace", index=False, dtype=dtype)
 

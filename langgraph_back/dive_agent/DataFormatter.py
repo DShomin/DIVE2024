@@ -15,7 +15,9 @@ class DataFormatter:
         question = state["question"]
         sql_query = state["sql_query"]
 
-        if visualization == "none":
+        visualization = visualization.strip()
+
+        if visualization == "none" or "none" in visualization:
             return {"formatted_data_for_visualization": None}
 
         if visualization == "scatter":
@@ -26,7 +28,11 @@ class DataFormatter:
                     visualization, question, sql_query, results
                 )
 
-        if visualization == "bar" or visualization == "horizontal_bar":
+        if (
+            visualization == "bar"
+            or visualization == "horizontal_bar"
+            or "bar" in visualization
+        ):
             try:
                 return self._format_bar_data(results, question)
             except Exception as e:
@@ -41,7 +47,6 @@ class DataFormatter:
                 return self._format_other_visualizations(
                     visualization, question, sql_query, results
                 )
-
         return self._format_other_visualizations(
             visualization, question, sql_query, results
         )

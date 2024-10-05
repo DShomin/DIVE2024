@@ -89,9 +89,8 @@ if ask_button:
             st.plotly_chart(fig)
 
         elif visualization_type == "pie":
-            viz_df = pd.DataFrame()
-            for i in visualization_data:
-                viz_df = pd.concat([viz_df, pd.DataFrame(i)])
+            viz_df = pd.DataFrame(visualization_data)
+
             fig = px.pie(viz_df, names="label", values="value")
             st.plotly_chart(fig)
         elif visualization_type == "scatter":
@@ -109,11 +108,8 @@ if ask_button:
             )
             fig = px.scatter(viz_df)
             st.plotly_chart(fig)
-        st.session_state["viz_df"] = viz_df
-        st.session_state["fig"] = fig
 
     st.write(answer)
-    st.write(viz_df)
 
     # if viz_df is not None:
     #     show_table = st.toggle("Show Table", False)

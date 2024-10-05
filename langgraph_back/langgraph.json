@@ -5,7 +5,7 @@
         "."
     ],
     "graphs": {
-        "trend_agent": "./trend_agent/main.py:graph"
+        "dive_agent": "./dive_agent/main.py:graph"
     },
     "env": ".env"
 }

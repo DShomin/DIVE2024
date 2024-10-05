@@ -322,6 +322,7 @@ Consider these types of questions when recommending a visualization:
 
 Provide your response in the following format:
 Recommended Visualization: [Chart type or "None"]. ONLY use the following names: bar, horizontal_bar, line, pie, scatter, none
+DO NOT ADD SPACE IN CHART TYPE.
 Reason: [Brief explanation for your recommendation]
 """,
                 ),
