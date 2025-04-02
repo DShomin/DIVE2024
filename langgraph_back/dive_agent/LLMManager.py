@@ -11,7 +11,7 @@ load_dotenv(
 
 class LLMManager:
     def __init__(self):
-        self.llm = ChatOpenAI(model="gpt-4o", temperature=0)  # gpt-4o
+        self.llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)  # gpt-4o
 
     def invoke(self, prompt: ChatPromptTemplate, **kwargs) -> str:
         messages = prompt.format_messages(**kwargs)
