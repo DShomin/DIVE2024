@@ -1,28 +1,79 @@
+# DIVE2024 프로젝트
 
-# directory structure
+본 프로젝트는 LangGraph와 PostgreSQL을 활용한 데이터 분석 및 시각화 애플리케이션입니다. LangGraph 기반의 백엔드와 Streamlit 기반의 프론트엔드로 구성되어 있습니다.
 
-`langgraph_back` is for backend code that for running langgraph server
-`langgraph_front` is for frontend code that is as a streamlit app
-`postgres_server` is for postgres db that is used for storing data
-`notebook` is for jupyter notebook code it is just for test and debug 
+## 프로젝트 구조
 
-# Run server
+- `langgraph_back`: LangGraph 서버를 실행하기 위한 백엔드 코드
+- `langgraph_front`: Streamlit 앱으로 구현된 프론트엔드 코드
+- `postgres_server`: 데이터 저장을 위한 PostgreSQL 데이터베이스 관련 코드
+- `public`: 정적 파일들을 위한 디렉토리
 
-1. `source postgres_server/build_docker.sh` 명령어를 실행하여 도커 컨테이너를 실행한다.
-2. data를 root 디렉토리에 이동시킨다.(DB로 업로드 시킬 csv 파일은 해당 디렉토리로 이동시킨다.)
+## 환경 설정
+
+1. 가상 환경 설정 (선택사항)
+```bash
+python -m venv .myenv
+source .myenv/bin/activate  # Linux/Mac
+# 또는
+.myenv\Scripts\activate     # Windows
 ```
-data
-├── DB
-│   ├── lotte
-│   │   ├── 002_ltmb_k7_data.csv
-│   │   └── 003_ltmb_mart_data.csv
-│   └── samsung
-│       └── DIVE_FINAL_F.csv
-```
-3. `postgres_server/upload_csv.py`를 실행하여 csv 파일을 업로드 시킨다.
-    만약 추가로 업로드할 csv가 있다면 해당 파일을 참고하여 파일을 추가로 업로드 시킨다.
-4. `postgres_server/upload_test.py`를 실행하여 업로드된 데이터가 잘 업로드 되었는지 확인한다.
-5. `source langgraph_back/run_server.sh` 명령어를 실행하여 streamlit 서버를 실행한다.
 
-# requirments
-`langgraph_back`경로에 `.env` 파일이 있어야하며 해당 파일에는 `OPENAI_API_KEY`가 있어야한다.
+2. 필요 패키지 설치
+```bash
+pip install -r requirements.txt
+```
+
+3. 환경 변수 설정
+   - `langgraph_back` 디렉토리에 `.env` 파일을 생성하고 다음 내용을 추가:
+   ```
+   OPENAI_API_KEY=your_openai_api_key_here
+   ```
+
+## 데이터베이스 설정
+
+1. PostgreSQL 도커 컨테이너 실행
+```bash
+source postgres_server/build_docker.sh
+```
+
+2. 필요한 데이터 파일 준비
+   - 데이터 파일(CSV)을 준비하여 `data/DB/` 디렉토리에 배치합니다
+   - 디렉토리 구조는 다음과 같아야 합니다:
+   ```
+   data/
+   └── DB/
+       ├── lotte/
+       │   ├── 002_ltmb_k7_data.csv
+       │   └── 003_ltmb_mart_data.csv
+       └── samsung/
+           └── DIVE_FINAL_F.csv
+   ```
+
+3. 데이터베이스에 CSV 파일 업로드
+```bash
+python postgres_server/upload_csv.py
+```
+
+4. 데이터 업로드 확인
+```bash
+python postgres_server/upload_test.py
+```
+
+## 서버 실행
+
+```bash
+source langgraph_back/run_server.sh
+```
+
+## 개발 환경
+
+- Python 3.10+
+- PostgreSQL
+- Docker
+
+## 참고사항
+
+- 민감한 정보(.env 파일, API 키 등)는 절대 Git에 커밋하지 마세요.
+- 대용량 데이터 파일은 `.gitignore`에 의해 Git에서 제외됩니다.
+- 노트북 파일(.ipynb)은 주로 테스트 및 디버깅용으로만 사용됩니다.
