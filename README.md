@@ -25,10 +25,24 @@ pip install -r requirements.txt
 ```
 
 3. 환경 변수 설정
-   - `langgraph_back` 디렉토리에 `.env` 파일을 생성하고 다음 내용을 추가:
+   - `langgraph_back` 디렉토리에 있는 `.env.example` 파일을 `.env`로 복사하고 필요한 API 키를 입력하세요:
+   ```bash
+   cp langgraph_back/.env.example langgraph_back/.env
+   # 그 후 텍스트 에디터로 .env 파일을 열어 API 키 값을 수정합니다
    ```
-   OPENAI_API_KEY=your_openai_api_key_here
-   ```
+
+## API 키 발급 방법
+
+### OpenAI API 키 (필수)
+1. [OpenAI API 웹사이트](https://platform.openai.com/signup)에 가입합니다.
+2. 가입 후 로그인하고 우측 상단의 계정 메뉴에서 "View API keys"를 클릭합니다.
+3. "Create new secret key" 버튼을 클릭하여 새로운 API 키를 생성합니다.
+4. 생성된 키를 `.env` 파일의 `OPENAI_API_KEY` 값으로 설정합니다.
+
+### SerpAPI 키 (검색 기능 사용 시 필요)
+1. [SerpAPI 웹사이트](https://serpapi.com/users/sign_up)에 가입합니다.
+2. 가입 후 대시보드에서 API 키를 확인합니다.
+3. 해당 키를 `.env` 파일의 `SERPAPI_KEY` 값으로 설정합니다.
 
 ## 데이터베이스 설정
 
