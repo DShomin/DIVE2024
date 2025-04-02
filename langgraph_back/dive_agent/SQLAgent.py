@@ -251,6 +251,7 @@ For example:
             return {"results": "NOT_RELEVANT"}
 
         try:
+            print(f"Run {query}")
             results = self.db_manager.execute_query(query)
             return {"results": results}
         except Exception as e:
@@ -275,7 +276,7 @@ For example:
             [
                 (
                     "system",
-                    """You are an AI assistant that formats database query results into a human-readable response. Give a conclusion to the user's question based on the query results. Do not give the answer in markdown format. Only give the answer in one line. Answer to Korea.""",
+                    """You are an AI assistant that formats database query results into a human-readable response. Give a conclusion to the user's question based on the query results. Do not give the answer in markdown format. Only give the answer in one line. ANSWER TO KOREAN.""",
                 ),
                 (
                     "human",

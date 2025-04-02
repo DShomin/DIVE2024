@@ -1,7 +1,7 @@
 from pytrends.request import TrendReq
 from serpapi import GoogleSearch
 import pandas as pd
-import plotly.express as px
+import os
 
 from langchain_core.tools import tool
 
@@ -53,7 +53,7 @@ def get_trends_by_keyword(
         )
         interest_over_time = pytrends.interest_over_time()
         interest_by_region = pytrends.interest_by_region(inc_low_vol=True)
-        
+
         interest_by_region.index.set_names("geoName", inplace=True)
         interest_by_region.reset_index(inplace=True)
         # interest_over_time_fig = px.line(

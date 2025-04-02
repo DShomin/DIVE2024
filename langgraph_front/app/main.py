@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import json
 from dotenv import load_dotenv
 
 import plotly.express as px

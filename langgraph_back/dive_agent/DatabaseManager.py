@@ -57,7 +57,7 @@ class DatabaseManager:
         CATEGORY_L_NM : 대분류 업종명 <가맹점 거래 발생 업종>
         MAIN_CSM_AREA : 소비자 주요 카드 사용 지역 <소비자 여행인지 아닌지 판단 가능할 것으로 보임>
         """
-        survay_desc_dict = {
+        survey_desc_dict = {
             "SQ1": "What is your gender?",
             "SQ2": "What is your age?",
             "SQ4": "Where do you currently reside?",
@@ -163,6 +163,7 @@ class DatabaseManager:
             """,
             "survey": """
             This table contains survey data on the perception of Busan and migration to Busan. 
+            "workation" is a combination of "work" and "vacation", meaning to work and travel in a non-residential area.
             - SQ1: "What is your gender?",
             - SQ2: "What is your age?",
             - SQ4: "Where do you currently reside?",
@@ -202,6 +203,23 @@ class DatabaseManager:
             - BQ11: "How did your image of Busan change after visiting {BQ8}?",
             - BQ12: "How likely are you to visit Busan again to enjoy {BQ8}?",
             - CQ1: "Have you ever experienced a workation in Busan?",
+            - CQ2_1: "Have you experienced a workation in Seoul?",
+            - CQ2_2: "Have you experienced a workation in Busan?",
+            - CQ2_3: "Have you experienced a workation in Incheon?",
+            - CQ2_4: "Have you experienced a workation in Daegu?",
+            - CQ2_5: "Have you experienced a workation in Daejeon?",
+            - CQ2_6: "Have you experienced a workation in Gwangju?",
+            - CQ2_7: "Have you experienced a workation in Ulsan?",
+            - CQ2_8: "Have you experienced a workation in Gyeonggi-do?",
+            - CQ2_9: "Have you experienced a workation in Chungcheongbuk-do?",
+            - CQ2_10: "Have you experienced a workation in Chungcheongnam-do?",
+            - CQ2_11: "Have you experienced a workation in Jeollabuk-do?",
+            - CQ2_12: "Have you experienced a workation in Jeollanam-do?",
+            - CQ2_13: "Have you experienced a workation in Gyeongsangbuk-do?",
+            - CQ2_14: "Have you experienced a workation in Gyeongsangnam-do?",
+            - CQ2_15: "Have you experienced a workation in Gangwon-do?",
+            - CQ2_16: "Have you experienced a workation in Sejong Special Self-Governing City?",
+            - CQ2_17: "Have you experienced a workation in Jeju Special Self-Governing Province?",
             - CQ3_1_merged: "What is the reason you experienced a workation in Seoul? (The value is included in the list.)",
             - CQ3_2_merged: "What is the reason you experienced a workation in Busan? (The value is included in the list.)",
             - CQ3_3_merged: "What is the reason you experienced a workation in Incheon? (The value is included in the list.)",
